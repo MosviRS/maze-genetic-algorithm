@@ -1,32 +1,29 @@
-// Daniel Shiffman
-// http://codingtra.in
-// http://patreon.com/codingtrain
-// Code for: https://youtu.be/bGz7mv2vD6g
+
 
 function DNA(genes) {
-  // Recieves genes and create a dna object
+  // Recve los genees y crear un objeto de tipo DNA
   if (genes) {
     this.genes = genes;
   }
-  // If no genes just create random dna
+  // si los genes no han sido creados crea un feneotipo aleatorio
   else {
     this.genes = [];
     for (var i = 0; i < espaciovida; i++) {
-      // Gives random vectors
+      // da vectores aleatorios
       this.genes[i] = p5.Vector.random2D();
-      // Sets maximum force of vector to be applied to a rocket
-      this.genes[i].setMag(maxforce);
+      //define la maxmia fuerza para ser aplicada al individuo
+      this.genes[i].setMag(maxfuerza);
     }
   }
-  // Performs a crossover with another member of the species
+  // cruza a laos individuos con el padrea a y b
   this.crossover = function(pareja) {
     var nuevosgenes = [];
-    // Picks random midpoint
+    // cruza los padres en dos puntos aleatorios
     var mid1 = floor(random(this.genes.length));
     var mid2 = floor(random(mid1+1,this.genes.length));
 
     for (var i = 0; i < this.genes.length; i++) {
-      // If i is greater than mid the new gene should come from this partner
+      //si es menor o igual al cruce 1 toma los genes del padre A sino los del B
       if (i <=mid1) {
         nuevosgenes[i] = this.genes[i]; 
       }else if(i > mid1 && i<=mid2){
@@ -36,17 +33,17 @@ function DNA(genes) {
       }
     }
  
-    // Gives DNA object an array
+    // crea un nuevo DNA con la cruza generada
     return new DNA(nuevosgenes);
   };
 
-  // Adds random mutation to the genes to add variance.
+  // agraga un amutacion alatoria para dar variedad
   this.mutation = function() {
     for (var i = 0; i < this.genes.length; i++) {
-      // if random number less than 0.01, new gene is then random vector
-      if (random(1) < 0.01) {
+      //si un numero aletorio es menor a 0.01, un nuevo gen es generado aletoriamente
+      if (random(1) < 0.03) {
         this.genes[i] = p5.Vector.random2D();
-        this.genes[i].setMag(maxforce);
+        this.genes[i].setMag(maxfuerza);
       }
     }
   };

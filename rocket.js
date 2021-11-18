@@ -1,25 +1,16 @@
-// Daniel Shiffman
-// http://codingtra.in
-// http://patreon.com/codingtrain
-// Code for: https://youtu.be/bGz7mv2vD6g
 
-// Constructor function
+// Constructor de la funcion
 function Rocket(dna) {
-  // Physics of rocket at current instance
+  // fisicas del individuo en la isntancia actual
   this.pos = createVector(width/2, height);
   this.vel = createVector();
   this.acc = createVector();
-  // Checkes rocket has reached target
-  this.completed = false;
-  // Checks if rocket had crashed
-  this.crashed = false;
-  //
-  this.auxforce;
-  this.auxX=0;
-  this.auxY=0;
-  this.auxcrashed;
-  this.move=true;
-  // Gives a rocket dna
+  // Revisa si el individuo ha llegado al obejticvo
+  this.completado = false;
+  //  Revisa si el individuo chocado
+  this.choco = false;
+  
+  // da el adn al individuo
   if (dna) {
     this.dna = dna;
   } else {
@@ -27,51 +18,51 @@ function Rocket(dna) {
   }
   this.fitness = 0;
 
-  // Object can recieve force and add to acceleration
-  this.applyForce = function(force) {
-    this.acc.add(force);
+  // el individuos recibe una fuerza y un aceleracion
+  this.aplicaFuerza = function(fuerza) {
+    this.acc.add(fuerza);
   };
-  // Calulates fitness of rocket
-  this.calcFitness = function(rockets) {
-    // Takes distance to target
+  // Calcula la aptitud del individuo
+  this.calcFitness = function(individuos) {
+    // Toma las dicsattnacias de el todos sus vecinos
     var distances=0;
-    var countRockets=0;
-    for(var i=0;i<rockets.length;i++){
-     if(rockets[i].pos.x > (this.pos.x-10) && rockets[i].pos.x < (this.pos.x+10)
-         && rockets[i].pos.y > (this.pos.y-10) && rockets[i].pos.y < (this.pos.y+10)){
+    var countIndividuos=0;
+    for(var i=0;i<individuos.length;i++){
+     if(individuos[i].pos.x > (this.pos.x-10) && individuos[i].pos.x < (this.pos.x+10)
+         && individuos[i].pos.y > (this.pos.y-10) && individuos[i].pos.y < (this.pos.y+10)){
           
-          countRockets++;
+          countIndividuos++;
           
        } 
-       var d = dist(this.pos.x, this.pos.y, rockets[i].pos.x,rockets[i].pos.y);
+       var d = dist(this.pos.x, this.pos.y, individuos[i].pos.x,individuos[i].pos.y);
        distances=distances+d;  
      
     }
   
-    // average distances range of fitness
+    // promedio de las distancias
     //console.log('pormedio de rockets '+countRockets);
-    this.fitness = distances/countRockets;
+    this.fitness = distances/countIndividuos;
     //console.log(this.fitness);
-    // If rocket gets to target increase fitness of rocket
-    if (this.completed) {
+    // si el individuo llega al objetico incrementa su aptitud
+    if (this.completado) {
       this.fitness *= 10;
     }
-    // If rocket does not get to target decrease fitness
-    if (this.crashed) {
+    // si choca decremneta su aptitud
+    if (this.choco) {
       this.fitness /= 10;
     }
   };
-  // Updates state of rocket
+  // Actuzaliza las fisicas del individuo
   this.update = function() {
     // Checks distance from rocket to target
-  var d = dist(this.pos.x, this.pos.y, target.x, target.y);
-    // If distance less than 10 pixels, then it has reached target
+  var d = dist(this.pos.x, this.pos.y, objetivo.x, objetivo.y);
+    // si la distanca es menos de 10 pixels ha llegado al obejtivo
   if (d < 10) {
-      this.completed = true;
-      this.pos = target.copy();
+      this.completado = true;
+      this.pos = objetivo.copy();
     }
 
-  // Rocket hit the barrier
+  // verifica si el individuo ha chocado con algun obstaculo
   for(var i=0;i<matrixBarriers.length;i++){
     if (
         this.pos.x > matrixBarriers[i][0] &&
@@ -79,26 +70,23 @@ function Rocket(dna) {
         this.pos.y > matrixBarriers[i][1] &&
         this.pos.y < matrixBarriers[i][1] + matrixBarriers[i][3]
       ) {
-          this.crashed = true;
-          this.move=false;
+          this.choco = true;
         }
   }
         
-    // Rocket has hit left or right of window
+    // el indiivduo ha choacdo con las paredes izqu y der
     if (this.pos.x > width || this.pos.x < 0) {
-          this.crashed = true;
-          this.move=false;   
+          this.choco = true;   
     }
-    // Rocket has hit top or bottom of window
+    // el indiivduo ha choacdo con las paredes arr y abj
     if (this.pos.y > height || this.pos.y < 0) {
-          this.crashed = true;
-          this.move=false;
+          this.choco = true;
     }
-    //applies the random vectors defined in dna to consecutive frames of rocket
-    this.applyForce(this.dna.genes[count]);
+    //aplica un vetor definido en le adn del indivduo
+    this.aplicaFuerza(this.dna.genes[count]);
     //console.log(this.dna.genes[count]);
-    // if rocket has not got to goal and not crashed then update physics engine
-    if(!this.crashed && !this.completed){
+    //si el objtivo no ha chovcado con alguna paraed actualzaiza las fisicas del individuo
+    if(!this.choco && !this.completado){
       this.vel.add(this.acc);
       this.pos.add(this.vel);
       this.acc.mult(0);
@@ -106,26 +94,22 @@ function Rocket(dna) {
     }
     
   };
-  // displays rocket to window
-  this.show = async function() {
+  // pinta el individuo en ele obejtivo
+  this.show = function() {
 
-
-    // push and pop allow's rotating and translation not to affect other objects
+    // agrganos las traslaccion a la pila para no afeectar a los demas obejtos
     push();
-    //color customization of rockets
+    //color del individuo
     //noStroke();
     fill('rgba(100%,0%,100%,1.5)');
-    //translate to the postion of rocket
+    //translada la posicion del individuo
     translate(this.pos.x, this.pos.y);
-    //rotatates to the angle the rocket is pointing
+    //rota el individuo hacia dondoe el vector apunta
     rotate(this.vel.heading());
-    //creates a rectangle shape for rocket
+    //crea la forma del indidviduo que es un indivduo
     rectMode(CENTER);
     ellipse(0,0, 5, 5);
     pop();
-
-
-
 
   };
   

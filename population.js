@@ -1,92 +1,92 @@
-// Daniel Shiffman
-// http://codingtra.in
-// http://patreon.com/codingtrain
-// Code for: https://youtu.be/bGz7mv2vD6g
 
 function Population() {
-  // Array of rockets
-  this.rockets = [];
-  // Amount of rockets
-  this.popsize = 30;
-  // Amount parent rocket partners
+  // Array de inidivudos
+  this.individuos = [];
+  // poblacion de individuos
+  this.popsize = 20;
+  // Optimos
   this.matingpool = [];
   this.optimoGlobal=0;
   this.promedios=[];
   this.optimos=[];
 
-  // Associates a rocket to an array index
+  // generacion de la poblacion
   for (var i = 0; i < this.popsize; i++) {
-    this.rockets[i] = new Rocket();
+    this.individuos[i] = new Rocket();
   }
 
   this.evaluate = function(generacion) {
-    var maxfit = 0;
+    var maxAptitud = 0;
     var suma=0;
     var sumaPromedio=0;
-    // Iterate through all rockets and calcultes their fitness
+    // Itera atravez de todos los individuos y calcula su fitness
     for (var i = 0; i < this.popsize; i++) {
-      // Calculates fitness
-      this.rockets[i].calcFitness(this.rockets);
-      // If current fitness is greater than max, then make max equal to current
-      suma=suma+this.rockets[i].fitness;
-      sumaPromedio=suma/this.rockets.length;
+      // Calcula el fitness
+      this.individuos[i].calcFitness(this.individuos);
+      // calcula el promedio de fitness por generacion
+      suma=suma+this.individuos[i].fitness;
       
-      if (this.rockets[i].fitness > maxfit) {
-        maxfit = this.rockets[i].fitness;
+      // si el individuo actual es mayor a maxApitud
+      //maxApitud es igual al actual individuo 
+      if (this.individuos[i].fitness > maxAptitud) {
+        maxAptitud = this.individuos[i].fitness;
       }
    
     }
-    if(maxfit > this.optimoGlobal){
-       this.optimoGlobal=maxfit;
+    sumaPromedio=suma/this.individuos.length;
+    if(maxAptitud > this.optimoGlobal){
+       this.optimoGlobal=maxAptitud;
     }
-    // Normalises fitnesses
+    // Normaliza fitnesses
     for (var i = 0; i < this.popsize; i++) {
-      this.rockets[i].fitness /= maxfit;
+      this.individuos[i].fitness /= maxAptitud;
     }
 
     this.matingpool = [];
-    // Take rockets fitness make in to scale of 1 to 100
-    // A rocket with high fitness will highly likely will be in the mating pool
+    // toma la aptitud y lo ajusta a una escala de 1 y 100 
+    // los inidividuos con mas aptitud tendran mas probabilidad de ser elegidos en la ruleta 
     for (var i = 0; i < this.popsize; i++) {
-      var n = this.rockets[i].fitness * 100;
+      var n = this.individuos[i].fitness * 100;
+      //console.log(this.rockets[i].fitness+" "+n);
       for (var j = 0; j < n; j++) {
-        this.matingpool.push(this.rockets[i]);
+        this.matingpool.push(this.individuos[i]);
       }
     }
-    this.optimos.push(this.optimoGlobal);
+   
+    this.optimos.push(maxAptitud);
     this.promedios.push(sumaPromedio);
     //Imprime el promedio por generacion
     //print(generacion,',',sumaPromedio);
     //Imprime el Optimo Global de las generaciones
     //print(generacion,',',this.optimoGlobal);
   };
-  // Selects appropriate genes for child
+  // Selecccion los padres apropiados por la aptitud
   this.selection = function() {
-    var newRockets = [];
+    var newIndividuos = [];
      
-        for (var i = 0; i < this.rockets.length; i++) {
-          // Picks random dna
+        for (var i = 0; i < this.individuos.length; i++) {
+          // selecciona dos padres de manera aleatoria
           var parentA = random(this.matingpool).dna;
           var parentB = random(this.matingpool).dna;
           
-          // Creates child by using crossover function
+          // Crea un hijo con la funcion de cruza en dos puntos
           var child = parentA.crossover(parentB);
-          child.mutation();
-          // Creates new rocket with child dna
-          newRockets[i] = new Rocket(child);
+          //child.mutation();
+          // Crea un nuevo hijo ya con la cruza y mutacion
+          newIndividuos[i] = new Rocket(child);
         }
-        // This instance of rockets are the new rockets
-        this.rockets = newRockets;
+        // ahora los individuos son los nuevos individuos
+        this.individuos = newIndividuos;
       
   
   };
 
-  // Calls for update and show functions
+  // llama a la funcion update y show para pintar los individuos
   this.run = function() {
     for (var i = 0; i < this.popsize; i++) {
-      this.rockets[i].update();
-      // Displays rockets to screen
-      this.rockets[i].show();
+      this.individuos[i].update();
+      // pinta los individuos en la pantalla
+      this.individuos[i].show();
     }
   };
 }

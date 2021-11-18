@@ -18,3 +18,18 @@ if(generation==30){
     }
    
   }
+
+
+if(generation==100){
+  console.log('promedio');
+  for(var i=0;i<this.poblacion.promedios.length;i++){
+    console.log(this.poblacion.promedios[i]);
+  }
+  console.log('optimos');
+  for(var i=0;i<this.poblacion.optimos.length;i++){
+    console.log(this.poblacion.optimos[i]);
+  }
+ 
+}
+ 
+  

@@ -1,20 +1,20 @@
 
 var poblacion;
-// Each rocket is alive till 400 frames
+// Each individuo esta puede vicir en  700 frames
 var espaciovida = 700;
-// Made to display count on screen
+// imprime el contador de vida
 var lifeP;
-// Keeps track of frames
+// contador qeu sirve para actualizar el boceto por frame
 var count = 0;
-// Where rockets are trying to go
-var target;
-// Max force applied to rocket
-var maxforce = 0.7;
-//number Generation
+// objetivo del individuo
+var objetivo;
+// Maxima fierza paliuzada para cada individuo
+var maxfuerza = 0.7;
+//numbero de generacion
 var generation = 1;
-//tamaño de casillas
+//tamaño de casillas del laberinto
 t=30;
-var pixel=50;
+var pixel=30;
 
 // Dimensions of barriers
 
@@ -33,7 +33,7 @@ function setup() {
   poblacion = new Population();
   lifeP = createP();
   generationP=createP();
-  target = createVector(60, 25);
+  objetivo = createVector(60, 25);
 
   //Crear laberinto
   for(let i=0;i<pixel;i++){
@@ -81,9 +81,9 @@ function setup() {
 
 function draw() {
 
-  //Genracion de poblacion
+  //crea la pobalcion y comienza a simular el individuo
   poblacion.run();
-  // Displays count to window
+  // Imprime el contador de frame en la pantallla
   lifeP.html(count);
   generationP.html('Generacion: '+generation);
 
@@ -97,7 +97,7 @@ function draw() {
     background(255); 
     
   }
-  if(generation==30){
+  if(generation==40){
     console.log('promedio');
     for(var i=0;i<this.poblacion.promedios.length;i++){
       console.log(this.poblacion.promedios[i]);
@@ -106,17 +106,15 @@ function draw() {
     for(var i=0;i<this.poblacion.optimos.length;i++){
       console.log(this.poblacion.optimos[i]);
     }
-   
   }
-  
-  //draw laberinto
+  //Dibuja el laberinto
  for(var i=0;i<matrixBarriers.length;i++){
-        // Renders barrier for rockets
+        // Pinta las berrears del laberinto
         fill(0);
         rect(matrixBarriers[i][0], matrixBarriers[i][1],matrixBarriers[i][2],matrixBarriers[i][3]);    
   } 
 
-  // Renders target
+  // Pinta el objetivo
   fill(51,255,122);
-  ellipse(target.x, target.y, 16, 16);
+  ellipse(objetivo.x, objetivo.y, 16, 16);
 }
