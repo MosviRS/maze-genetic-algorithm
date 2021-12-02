@@ -3,7 +3,7 @@ function Population() {
   // Array de inidivudos
   this.individuos = [];
   // poblacion de individuos
-  this.popsize = 20;
+  this.popsize = 100;
   // Optimos
   this.matingpool = [];
   this.optimoGlobal=0;
@@ -25,7 +25,6 @@ function Population() {
       this.individuos[i].calcFitness(this.individuos);
       // calcula el promedio de fitness por generacion
       suma=suma+this.individuos[i].fitness;
-      
       // si el individuo actual es mayor a maxApitud
       //maxApitud es igual al actual individuo 
       if (this.individuos[i].fitness > maxAptitud) {
@@ -33,10 +32,11 @@ function Population() {
       }
    
     }
-    sumaPromedio=suma/this.individuos.length;
-    if(maxAptitud > this.optimoGlobal){
-       this.optimoGlobal=maxAptitud;
-    }
+    //promedio
+    sumaPromedio=suma/this.popsize;
+    this.optimos.push(maxAptitud);
+    this.promedios.push(sumaPromedio)
+
     // Normaliza fitnesses
     for (var i = 0; i < this.popsize; i++) {
       this.individuos[i].fitness /= maxAptitud;
@@ -52,31 +52,31 @@ function Population() {
         this.matingpool.push(this.individuos[i]);
       }
     }
-   
-    this.optimos.push(maxAptitud);
-    this.promedios.push(sumaPromedio);
-    //Imprime el promedio por generacion
-    //print(generacion,',',sumaPromedio);
-    //Imprime el Optimo Global de las generaciones
-    //print(generacion,',',this.optimoGlobal);
+ 
   };
   // Selecccion los padres apropiados por la aptitud
   this.selection = function() {
     var newIndividuos = [];
-     
-        for (var i = 0; i < this.individuos.length; i++) {
+    var selccionSize=this.popsize/2;
+        for (var i = 0; i < selccionSize; i++) {
           // selecciona dos padres de manera aleatoria
           var parentA = random(this.matingpool).dna;
           var parentB = random(this.matingpool).dna;
-          
+          //Cruza puntos de cruce
+          var mid1 = floor(random(1,espaciovida-2));
+          var mid2 = floor(random(mid1+1,espaciovida-1));
           // Crea un hijo con la funcion de cruza en dos puntos
-          var child = parentA.crossover(parentB);
-          //child.mutation();
+          var child1= parentA.crossover(parentB,mid1,mid2);
+          var child2= parentB.crossover(parentA,mid1,mid2);
+          child1.mutation();
+          child2.mutation();
           // Crea un nuevo hijo ya con la cruza y mutacion
-          newIndividuos[i] = new Rocket(child);
+          newIndividuos.push(new Rocket(child1));
+          newIndividuos.push(new Rocket(child2));
         }
         // ahora los individuos son los nuevos individuos
         this.individuos = newIndividuos;
+        newIndividuos=[];
       
   
   };
