@@ -2,7 +2,7 @@
 // Constructor de la funcion
 function Rocket(dna) {
   // fisicas del individuo en la isntancia actual
-  this.pos = createVector(width/2, height);
+  this.pos = createVector(width/2, height-10);
   this.vel = createVector();
   this.acc = createVector();
   // Revisa si el individuo ha llegado al obejticvo
@@ -17,7 +17,8 @@ function Rocket(dna) {
     this.dna = new DNA();
   }
   this.fitness = 0;
-
+  this.fitnessaux=0;
+  this.memory=[];
   // el individuos recibe una fuerza y un aceleracion
   this.aplicaFuerza = function(fuerza) {
     this.acc.add(fuerza);
@@ -32,29 +33,25 @@ function Rocket(dna) {
          && individuos[i].pos.y > (this.pos.y-10) && individuos[i].pos.y < (this.pos.y+10)){
           
           countIndividuos++;
-          
        } 
        var d = dist(this.pos.x, this.pos.y, individuos[i].pos.x,individuos[i].pos.y);
        distances=distances+d;  
      
     }
   
-    // promedio de las distancias
-    //console.log('pormedio de rockets '+countRockets);
-    this.fitness = distances/countIndividuos;
-    //console.log(this.fitness);
+    this.fitness =distances/countIndividuos;
     // si el individuo llega al objetico incrementa su aptitud
     if (this.completado) {
       this.fitness *= 10;
     }
-    // si choca decremneta su aptitud
-    if (this.choco) {
-      this.fitness /= 10;
+    if(this.crashed){
+      this.fitness/=10;
     }
+    this.fitnessaux=this.fitness;
   };
   // Actuzaliza las fisicas del individuo
   this.update = function() {
-    // Checks distance from rocket to target
+    // revisa la distancia del indiviuso al objetivo
   var d = dist(this.pos.x, this.pos.y, objetivo.x, objetivo.y);
     // si la distanca es menos de 10 pixels ha llegado al obejtivo
   if (d < 10) {

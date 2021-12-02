@@ -1,7 +1,7 @@
 
 var poblacion;
 // Each individuo esta puede vicir en  700 frames
-var espaciovida = 700;
+var espaciovida = 300;
 // imprime el contador de vida
 var lifeP;
 // contador qeu sirve para actualizar el boceto por frame
@@ -13,8 +13,8 @@ var maxfuerza = 0.7;
 //numbero de generacion
 var generation = 1;
 //tamaño de casillas del laberinto
-t=30;
-var pixel=30;
+t=50;
+var pixel=50;
 
 // Dimensions of barriers
 
@@ -64,13 +64,13 @@ function setup() {
   //  }
     
   //}
-
+  var index=0;
   for(let i=0;i<pixel;i++){
     for(let j=0;j<pixel;j++){
       if(laberinto[i][j]==1){  
-         matrixBarriers.push([i*t,j*t,t,t]);
+         matrixBarriers.push([i*t,j*t,t,t,index]);
+         index++;
       }
-     // console.log(i*t,j*t,t,t);
     }
   }
   
@@ -97,7 +97,7 @@ function draw() {
     background(255); 
     
   }
-  if(generation==40){
+  if(generation==200){
     console.log('promedio');
     for(var i=0;i<this.poblacion.promedios.length;i++){
       console.log(this.poblacion.promedios[i]);
